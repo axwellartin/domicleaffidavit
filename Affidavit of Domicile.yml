@@ -1,0 +1,437 @@
+---
+include:
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+  - docassemble.MassAccess:massaccess.yml
+---
+metadata:
+  title: |
+    Affidavit of Domicile MPC 485
+  short title: |
+    Affidavit of Domicile
+  tags:
+    - ES-00-00-00-00
+  authors:
+    - Max Martin
+---
+mandatory: True
+comment: |
+  Global interview metadata
+variable name: interview_metadata["Affidavit_of_Domicile_MPC_485"]
+data:
+  al_weaver_version: "1.6.3"
+  generated on: "2022-04-25"
+  title: >-
+    Affidavit of domicile
+  short title: >-
+    Affidavit of domicile
+  description: |-
+    Please Complete this Form in order to confirm the decedent lived where you are filing their Probate Case.
+  original_form: >-
+    
+  allowed courts: 
+    - "Probate and Family Court"
+  categories:
+    - "ES-00-00-00-00"
+  typical role: "unknown"
+---
+code: |
+  interview_metadata['main_interview_key'] =  'Affidavit_of_Domicile_MPC_485'
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-AffidavitOfDomicileMpc485'
+---
+code: |
+  interview_short_title = "File an Affidavit of domicile for Probate"
+---
+code: |
+  al_form_type = 'existing_case'
+---
+objects:
+  - affiant: ALPeopleList.using(ask_number=True,target_number=1)
+  - users: ALPeopleList.using(ask_number=True,target_number=1)
+---
+sections:
+  - review_Affidavit_of_Domicile_MPC_485: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Affidavit_of_Domicile_MPC_485
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["Affidavit_of_Domicile_MPC_485"]["allowed courts"]
+  nav.set_section('review_Affidavit_of_Domicile_MPC_485')
+  # Below sets the user_role by asking a question.
+  # You can set user_role directly instead to either 'plaintiff' or 'defendant'
+  docket_number
+  decedent_date_death
+  record_owner_yes
+  decedent_resident_additional
+  affiant_address
+  set_progress(14)
+  trial_court.division
+  decedents.gather()
+  decedents[0].address.address
+  set_progress(28)
+  signature_date
+  set_progress(42)
+  affiant[0].address.address
+  affiant.gather()
+  set_progress(57)
+  affiant[0].phone_number
+  interview_order_Affidavit_of_Domicile_MPC_485 = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  Affidavit_of_Domicile_MPC_485_intro
+  interview_order_Affidavit_of_Domicile_MPC_485
+  signature_date
+  # Save anonymized interview statistics (customize the saved data below)
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  Affidavit_of_Domicile_MPC_485_preview_question
+  basic_questions_signature_flow
+  Affidavit_of_Domicile_MPC_485_download
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Affidavit_of_domicile
+continue button field: Affidavit_of_Domicile_MPC_485_intro
+question: |
+  Affidavit of Domicile--MPC 485
+subquestion: |
+  Please make sure to have the Estate’s Docket Number on hand for this form. After completing the form, please print, sign, and send to the probate court where the Decedent, the person that died, lived at prior to their death.
+
+  The purpose of this form is to confirm that the Decedent lived in Massachusetts for estate purposes.  You are the affiant, which means that you are confirming that they lived in Massachusetts.  
+---
+id: Decedent Information
+question: |
+  Decedent Information
+fields:
+  - "What is the date of death for the Decedent?": decedent_date_death
+    maxlength: 26
+    help: |
+      The **Decedent** is the person who died.
+  - "What is your relationship to the decedent?": affiant_relationship
+    maxlength: 27
+    help: |
+      Please state whether you are an **Executor**, **Personal Representative**, **Spouse**, **Sibling**, **Son**, **Daughter**, **Friend**, or something else
+---
+id: Decedent Property Information
+question: |
+  Decedent Property Information
+subquestion: |
+  This information will support that the Decedent lived in Massachusetts. Fill out the following boxes and check all that apply.
+fields:
+  - "What is Decedent’s **MASSACHUSETTS** Address?": decedent_address
+    maxlength: 26
+  - "The Decedent either owned or leased the **MASSACHUSETTS** property.": record_owner_yes
+    datatype: yesno
+  - "The Decedent’s spouse still resides on the **MASSACHUSETTS** property.": spouse_resides_yes
+    datatype: yesno
+  - "The Decedent lived at the **MASSACHUSETTS** property at their time of death.": decedent_living_yes
+    datatype: yesno
+  - "The Decedent’s personal property is still located on the **MASSACHUSETTS** property.": decedents_personal_yes
+    datatype: yesno
+  - "The Decedent’s **MASSACHUSETTS** property was listed on their last tax return before they died.": income_tax_yes
+    datatype: yesno
+  - "What was the last year the **MASSACHUSETTS** property was listed on the Decedent’s tax return?": decedent_tax_year
+    required: false
+    maxlength: 4
+    help: |
+      Please leave blank if you do not have any additional information.
+  - "What year did the Decedent start living on their **MASSACHUSETTS** property?": decedent_living_since
+    required: false
+    maxlength: 4
+    help: |
+      Please leave blank if you do not have any additional information.
+---
+id: Additional Property **Ouside of Massachusetts**
+question: |
+  Additional Property **Ouside of Massachusetts**
+subquestion: |
+  (check all that apply, and please place "n/a" within boxes that you said no to)
+fields:
+  - "Check this box if the Decedent has any other property located **OUTSIDE OF MASSACHUSETTS**?": decedent_resident_additional
+    datatype: yesno
+  - "Why is the property **OUTSIDE OF MASSACHUSETTS** not considered decedent’s permanent residence/domicile?": temporary_address_reason
+    input type: area
+    required: False
+    maxlength: 270
+    help: |
+      Please leave blank if you do not have any additional information.
+  - "Check this box if you have any additional information to support  that Decedent’s domicile is within Massachusetts?": additional_information_yes
+    datatype: yesno
+    help: |
+      *Domicile* is similar to resident.  e.g., If the Decedent lived in Massachusetts for over half of the year, their domicile is in Massachusetts.
+  - "What is the additional information?": additional_information
+    input type: area
+    required: false
+    maxlength: 184
+    help: |
+       Please leave blank if you do not have any additional information.
+---
+id: Affiant Personal Address
+question: |
+  Affiant Personal Address
+fields:
+  - "What is YOUR address?": affiant_address
+    maxlength: 34
+---
+code: |
+  # This is a placeholder for the addresses that will be searched
+  # for matching address to court. Edit if court venue is based on 
+  # a different address than the user's
+  addresses_to_search = [user.address for user in users]
+---
+id: preview Affidavit_of_Domicile_MPC_485
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_court_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_Affidavit_of_Domicile_MPC_485'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Affidavit_of_Domicile_MPC_485_preview_question    
+---
+code: |
+  signature_fields = []
+---
+id: Affidavit of Domicile MPC 485 review screen
+event: review_Affidavit_of_Domicile_MPC_485
+question: |
+  Review your answers
+review:
+  - Edit: decedent_date_death
+    button: |
+      **What is the date of death for the Decedent?**:
+      ${ decedent_date_death }
+  - Edit: affiant_relationship
+    button: |
+      **What is your relationship to the decedent?**:
+      ${ affiant_relationship }
+  - Edit: decedent_address
+    button: |
+      **What is Decedent’s MASSACHUSETTS Address?**:
+      ${ decedent_address }
+  - Edit: record_owner_yes
+    button: |
+      **Did the Decedent own the property or lease the property?**:
+      ${ word(yesno(record_owner_yes)) }
+  - Edit: spouse_resides_yes
+    button: |
+      **Does the Decedent’s spouse still reside on the property?**:
+      ${ word(yesno(spouse_resides_yes)) }
+  - Edit: decedents_personal_yes
+    button: |
+      **Is the Decedent’s personal property still located on the property?**:
+      ${ word(yesno(decedents_personal_yes)) }
+  - Edit: income_tax_yes
+    button: |
+      **Was Decedent’s MASSACHUSETTS property listed on their last tax return?**:
+      ${ word(yesno(income_tax_yes)) }
+  - Edit: decedent_tax_year
+    button: |
+      **What was the last year the MASSACHUSETTS property was listed on the Decedent’s tax return?**:
+      ${ decedent_tax_year }
+  - Edit: decedent_living_since
+    button: |
+      **When did Decedent begin to reside on their MASSACHUSETTS property?**:
+      ${ decedent_living_since }
+  - Edit: decedent_living_yes
+    button: |
+      **Did decedent live at the property at their time of death?**:
+      ${ word(yesno(decedent_living_yes)) }
+  - Edit: decedent_resident_additional
+    button: |
+      **Does Decedent have any other properties located OUTSIDE OF Massachusetts?**:
+      ${ decedent_resident_additional }
+  - Edit: temporary_address_reason
+    button: |
+      **Why is the property OUTSIDE OF MASSACHUSETTS not considered decedent’s permanent residence/domicile?**:
+      ${ temporary_address_reason }
+  - Edit: additional_information_yes
+    button: |
+      **Do you have any additional information to support your assertion that Decedent’s domicile is within Massachusetts?**:
+      ${ word(yesno(additional_information_yes)) }
+  - Edit: additional_information
+    button: |
+      **What is the additional information?**:
+      > ${ single_paragraph(additional_information) }
+  - Edit: affiant_address
+    button: |
+      **What is YOUR address?**:
+      ${ affiant_address }
+  - Edit: docket_number
+    button: |
+      **docket_number**:
+      ${ docket_number }
+  - Edit: trial_court
+    button: |
+      **trial_court**
+
+      % if defined("trial_court.division"):
+      * division: ${ trial_court.division }
+      % endif
+  - Edit: decedents.revisit
+    button: |
+      **Decedents**
+
+      % for item in decedents:
+        * ${ item }
+      % endfor
+  - Edit: signature_date
+    button: |
+      **signature_date**:
+      ${ signature_date }
+  - Edit: affiant.revisit
+    button: |
+      **Affiant**
+
+      % for item in affiant:
+        * ${ item }
+      % endfor
+---
+continue button field: decedents.revisit
+question: |
+  Edit decedents
+subquestion: |
+  ${ decedents.table }
+
+  ${ decedents.add_action() }
+---
+table: decedents.table
+rows: decedents
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.zip") else ""
+edit:
+  - name.first
+  - address.zip
+confirm: True
+
+---
+continue button field: affiant.revisit
+question: |
+  Edit affiant
+subquestion: |
+  ${ affiant.table }
+
+  ${ affiant.add_action() }
+---
+table: affiant.table
+rows: affiant
+columns:
+  - Address: |
+      row_item.address.block() if defined("row_item.address.unit") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+edit:
+  - address.unit
+  - name.first
+  - phone_number
+confirm: True
+
+---
+id: download Affidavit_of_Domicile_MPC_485
+event: Affidavit_of_Domicile_MPC_485_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_Affidavit_of_Domicile_MPC_485'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+progress: 100
+---
+objects:
+  - Affidavit_of_Domicile_MPC_485_post_interview_instructions: ALDocument.using(title="Instructions", filename="Affidavit_of_Domicile_MPC_485_next_steps.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - Affidavit_of_Domicile_MPC_485_attachment: ALDocument.using(title="Affidavit of domicile", filename="Affidavit_of_Domicile_MPC_485.pdf", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[Affidavit_of_Domicile_MPC_485_post_interview_instructions,Affidavit_of_Domicile_MPC_485_attachment], filename="Affidavit_of_Domicile_MPC_485.pdf_package.pdf", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[Affidavit_of_Domicile_MPC_485_attachment], filename="Affidavit_of_Domicile_MPC_485.pdf_package.pdf", title="All forms to download for your records", enabled=True)
+---
+attachments:
+  - name: Affidavit of Domicile MPC 485 post interview instructions
+    filename: Post-interview-instructions     
+    variable name: Affidavit_of_Domicile_MPC_485_post_interview_instructions[i]        
+    skip undefined: True
+    docx template file: Affidavit_of_Domicile_MPC_485_next_steps.docx
+  - name: Affidavit of Domicile MPC 485 attachment
+    filename: Affidavit_of_Domicile_MPC_485.pdf     
+    variable name: Affidavit_of_Domicile_MPC_485_attachment[i]        
+    skip undefined: True
+    pdf template file: Affidavit_of_Domicile_MPC_485.pdf
+    fields:
+      - "docket_number": ${ docket_number }
+      - "trial_court_division": ${ trial_court.division }
+      - "decedent_name_last": ${ decedents[0].name.last }
+      - "decedent_name_middle": ${ decedents[0].name.middle }
+      - "decedent_name_first": ${ decedents[0].name.first }
+      - "decedent_address_city__1": ${ decedents[0].address.city }
+      - "decedent_address_city__2": ${ decedents[0].address.city }
+      - "decedent_address_city__3": ${ decedents[0].address.city }
+      - "decedent_address_unit__1": ${ decedents[0].address.unit }
+      - "decedent_address_unit__2": ${ decedents[0].address.unit }
+      - "decedent_address_county__1": ${ decedents[0].address.county }
+      - "decedent_address_county__2": ${ decedents[0].address.county }
+      - "decedent_address_state": ${ decedents[0].address.state }
+      - "decedent_address_zip": ${ decedents[0].address.zip }
+      - "signature_date": ${ signature_date }
+      - "affiant_address_city": ${ affiant[0].address.city }
+      - "affiant_name_first": ${ affiant[0].name.first }
+      - "affiant_address_zip": ${ affiant[0].address.zip }
+      - "affiant_name_last": ${ affiant[0].name.last }
+      - "affiant_address_state": ${ affiant[0].address.state }
+      - "affiant_phone_number": ${ affiant[0].phone_number }
+      - "affiant_name": ${ affiant[0] }
+      - "affiant_address_unit": ${ affiant[0].address.unit }
+      - "affiant_name_middle_initial": ${ affiant[0].name.middle_initial() }
+      - "decedent_date_death": ${ decedent_date_death }
+      - "affiant_relationship": ${ affiant_relationship }
+      - "decedent_address__1": ${ decedent_address }
+      - "decedent_address__2": ${ decedent_address }
+      - "record_owner_yes": ${ record_owner_yes }
+      - "spouse_resides_yes": ${ spouse_resides_yes }
+      - "decedents_personal_yes": ${ decedents_personal_yes }
+      - "income_tax_yes": ${ income_tax_yes }
+      - "decedent_tax_year": ${ decedent_tax_year }
+      - "decedent_living_since": ${ decedent_living_since }
+      - "decedent_living_yes": ${ decedent_living_yes }
+      - "decedent_resident_additional": ${ decedent_resident_additional }
+      - "temporary_address_reason": ${ temporary_address_reason }
+      - "additional_information_yes": ${ additional_information_yes }
+      - "additional_information": ${ additional_information }
+      - "affiant_address": ${ affiant_address }
